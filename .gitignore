@@ -2,6 +2,7 @@
 .bloop
 .bsp
 .metals
+*metals.sbt
 
 # scala 3
 .tasty
@@ -12,7 +13,6 @@
 # sbt
 # (may want to keep parts of 'project')
 bin/
-project/
 target/
 build/
 
