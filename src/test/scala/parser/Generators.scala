@@ -1,6 +1,7 @@
 package parser
 
 import org.scalacheck.Gen
+import spire.math.UByte
 
 object Generators {
 
@@ -11,9 +12,26 @@ object Generators {
     )
 
   val digit = Gen.numChar
+
   val nonDigit = Gen.choose(0, 0xFFFF).map(_.toChar).filter(x => !x.isDigit)
+
   val space = Gen.oneOf(spaceChars)
+
   val nonSpace = Gen.choose(0, 0xFFFF).map(_.toChar).filter(x => !spaceChars.contains(x))
+
   val letter = Gen.alphaChar
+
   val nonLetter = Gen.choose(0, 0xFFFF).map(_.toChar).filter(x => !x.isLetter)
+
+  val int = Gen.choose(Int.MinValue, Int.MaxValue)
+
+  val ubyte = Gen.choose[Int](UByte.MinValue.toInt, UByte.MaxValue.toInt).map(UByte(_))
+
+  val ipv4 = 
+    for {
+      one <- ubyte
+      two <- ubyte
+      three <- ubyte
+      four <- ubyte
+    } yield IPv4(one, two, three, four)
 }

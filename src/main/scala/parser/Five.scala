@@ -15,8 +15,8 @@ object Five {
 
 
   object Parser {
-    implicit val parserFunctor = new Functor[Parser] {
-      def map[A, B](p: Parser[A])(f: A => B): Parser[B] = 
+    implicit val catsInstances = new Functor[Parser] with Applicative[Parser] with Monad[Parser] {
+      override def map[A, B](p: Parser[A])(f: A => B): Parser[B] = 
         Parser(str => {
           val opt = parse(p)(str)
           opt match {
@@ -24,23 +24,17 @@ object Five {
             case None            => None
           }
         })
-    }
 
-    implicit val parserApplicative = new Applicative[Parser] {
       def pure[A](x: A): Parser[A] = 
         Parser(str => Some((x, str)))
 
-      def ap[A, B](ff: Parser[A => B])(fa: Parser[A]): Parser[B] =
+      override def ap[A, B](ff: Parser[A => B])(fa: Parser[A]): Parser[B] =
         Parser(str => 
           for {
             (f, tail) <- parse(ff)(str)
             (a, tail2) <- parse(fa)(tail)
           } yield (f(a), tail2)
         )
-    }
-
-    implicit def parserMonad(implicit app : Applicative[Parser]) = new Monad[Parser] {
-      def pure[A](x: A): Parser[A] = app.pure(x)
 
       def flatMap[A, B](fa: Parser[A])(f: A => Parser[B]): Parser[B] = 
         Parser(str =>

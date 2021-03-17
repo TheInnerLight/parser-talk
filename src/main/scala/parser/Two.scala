@@ -12,6 +12,7 @@ object Two {
     parse(parser)(str).map{ case (a,_) => a }
 
 
+  
   object Parser {
     def char(c : Char) = Parser[Char](str =>
       str.headOption match {
